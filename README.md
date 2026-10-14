@@ -1,5 +1,7 @@
 # Chess Coach
 
+**▶ [Live demo](https://theoyanvno.github.io/chess-coach/)**
+
 Play chess against a computer opponent that also **coaches you**. After every move, the coach grades it (Best, Excellent, Good, Inaccuracy, Mistake, Blunder) and explains why in plain language, then gives you a report at the end of the game.
 
 **Tech:** JavaScript (ES modules) · Web Worker · HTML/CSS · `node:test` · no frameworks or dependencies
