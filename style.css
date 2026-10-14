@@ -1,0 +1,43 @@
+:root { --bg: #f4f1ea; --panel: #fff; --text: #1f2328; --muted: #6b7280; --line: #e5e1d8;
+        --light: #eedbb5; --dark: #b58863; --sel: #f6e05e; --great: #15803d; --good: #2563eb; --warn: #b45309; --bad: #b91c1c; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px; background: #262421; color: #fff; }
+h1 { margin: 0; font-size: 1.3rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+select, button { font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; background: #fff; color: var(--text); cursor: pointer; }
+header button { background: #81b64c; color: #fff; border: 0; font-weight: 600; }
+main { display: grid; grid-template-columns: minmax(280px, 560px) minmax(260px, 1fr); gap: 20px; max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+.status { font-weight: 600; margin-bottom: 8px; min-height: 1.4em; }
+.board { display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); aspect-ratio: 1; width: 100%; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.2); user-select: none; }
+.sq { position: relative; min-width: 0; min-height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: min(8.5vw, 50px); line-height: 1; cursor: pointer; }
+.sq.light { background: var(--light); } .sq.dark { background: var(--dark); }
+.sq.last { box-shadow: inset 0 0 0 100px rgba(246, 224, 94, .45); }
+.sq.sel  { box-shadow: inset 0 0 0 100px rgba(130, 151, 105, .75); }
+.sq.hint { box-shadow: inset 0 0 0 4px #2563eb; }
+.sq.check { background: radial-gradient(circle, #ff3b3b 0%, #e11d1d 35%, transparent 75%); }
+.sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(0,0,0,.2); }
+.sq.target.capture::after { width: 86%; height: 86%; background: none; border: 5px solid rgba(0,0,0,.2); }
+.piece { transition: transform .15s; }
+.piece.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 1px #000, 0 2px 2px rgba(0,0,0,.4); }
+.piece.b { color: #111; text-shadow: 0 1px 1px rgba(255,255,255,.35); }
+.coord { position: absolute; font-size: 11px; font-weight: 600; opacity: .7; }
+.coord.file { right: 3px; bottom: 2px; } .coord.rank { left: 3px; top: 2px; }
+.actions { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.toggle { display: flex; gap: 6px; align-items: center; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+.panel h2 { margin: 0 0 10px; font-size: 1rem; }
+.feed { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; }
+.note { border-left: 4px solid var(--line); padding: 6px 10px; background: #faf9f6; border-radius: 0 6px 6px 0; animation: pop .25s ease; }
+.note.great { border-color: var(--great); } .note.good { border-color: var(--good); } .note.warn { border-color: var(--warn); } .note.bad { border-color: var(--bad); } .note.tip { border-color: #7c3aed; }
+.note .tag { font-weight: 700; } .great .tag { color: var(--great); } .good .tag { color: var(--good); } .warn .tag { color: var(--warn); } .bad .tag { color: var(--bad); } .tip .tag { color: #7c3aed; }
+.note ul { margin: 4px 0 0; padding-left: 18px; } .note li { margin: 2px 0; }
+.note button { margin-top: 6px; font-size: .85rem; padding: 3px 8px; }
+.muted { color: var(--muted); }
+.moves { columns: 2; margin: 0; padding-left: 28px; font-family: ui-monospace, monospace; font-size: .9rem; max-height: 200px; overflow-y: auto; }
+dialog { border: 0; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+.promo-choices { display: flex; gap: 8px; } .promo-choices button { font-size: 2rem; padding: 4px 12px; }
+.stat { font-size: 2.2rem; font-weight: 800; }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 800px) { main { grid-template-columns: 1fr; } }

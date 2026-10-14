@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chess Coach</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Chess Coach</h1>
+    <div class="controls">
+      <label>Play as
+        <select id="color"><option value="w">White</option><option value="b">Black</option></select>
+      </label>
+      <label>Opponent
+        <select id="level">
+          <option value="beginner">Beginner</option>
+          <option value="casual" selected>Casual</option>
+          <option value="club">Club</option>
+        </select>
+      </label>
+      <button id="new">New game</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="board-wrap">
+      <div id="status" class="status" role="status"></div>
+      <div id="board" class="board" aria-label="Chess board"></div>
+      <div class="actions">
+        <button id="hint">💡 Hint</button>
+        <button id="undo">↶ Take back</button>
+        <label class="toggle"><input type="checkbox" id="coachToggle" checked> Coach on</label>
+      </div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2>Coach</h2>
+        <div id="feed" class="feed"><p class="muted">Make a move and I'll tell you what was good about it, what to watch out for, and how to improve.</p></div>
+      </section>
+      <section class="panel">
+        <h2>Moves</h2>
+        <ol id="moves" class="moves"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <dialog id="promo">
+    <p>Promote to:</p>
+    <div id="promoChoices" class="promo-choices"></div>
+  </dialog>
+
+  <dialog id="report">
+    <h2>Game report</h2>
+    <div id="reportBody"></div>
+    <form method="dialog"><button>Close</button></form>
+  </dialog>
+
+  <script type="module" src="src/ui.js"></script>
+</body>
+</html>
