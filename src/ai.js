@@ -75,15 +75,70 @@ export function rankMoves(s, depth) {
 }
 
 export const LEVELS = {
-  beginner: { depth: 1, randomness: 150, label: 'Beginner' },
-  casual:   { depth: 2, randomness: 40,  label: 'Casual' },
-  club:     { depth: 3, randomness: 0,   label: 'Club' },
+  easy:         { depth: 1, randomness: 150, label: 'Easy' },
+  medium:       { depth: 2, randomness: 40,  label: 'Medium' },
+  hard:         { depth: 3, randomness: 0,   label: 'Hard' },
+  // Professional searches deeper and deeper until its time runs out, then plays the best move it fully checked
+  professional: { depth: 5, randomness: 0,   label: 'Professional', timeMs: 2500 },
 };
 
-/** Picks the computer's move. Lower levels sometimes choose a slightly worse move on purpose. */
-export function chooseMove(s, level = 'casual', rand = Math.random) {
-  const { depth, randomness } = LEVELS[level];
-  const ranked = rankMoves(s, depth);
+// Old level names still work (saved links, older tests)
+const ALIASES = { beginner: 'easy', casual: 'medium', club: 'hard' };
+export const levelOf = (name) => LEVELS[name] ?? LEVELS[ALIASES[name]] ?? LEVELS.medium;
+
+class OutOfTime extends Error {}
+
+/** Like search(), but gives up (throws) once the clock passes the deadline. */
+function timedSearch(s, depth, alpha, beta, ply, deadline, now) {
+  if (now() > deadline) throw new OutOfTime();
+  const moves = legalMoves(s);
+  if (!moves.length) return inCheck(s) ? -MATE + ply : 0;
+  if (depth === 0) return quiesce(s, alpha, beta);
+  for (const m of ordered(moves)) {
+    const score = -timedSearch(makeMove(s, m), depth - 1, -beta, -alpha, ply + 1, deadline, now);
+    if (score >= beta) return beta;
+    if (score > alpha) alpha = score;
+  }
+  return alpha;
+}
+
+/**
+ * Iterative deepening: search depth 1, then 2, then 3... until the time budget is used up.
+ * Each finished depth puts its best move first for the next one, which makes alpha-beta prune far more.
+ * Returns the ranking from the deepest search that finished, and how deep that was.
+ */
+export function rankMovesTimed(s, { maxDepth = 5, timeMs = 2500, now = () => Date.now() } = {}) {
+  const deadline = now() + timeMs;
+  let moves = ordered(legalMoves(s));
+  let best = moves.map((move) => ({ move, score: 0 }));
+  let reached = 0;
+  for (let depth = 1; depth <= maxDepth; depth++) {
+    try {
+      const ranked = [];
+      let alpha = -Infinity;
+      for (const move of moves) {
+        // Only the best move needs an exact score. Others are searched with a narrow window, and if they
+        // can't beat the best so far they are ranked just below it rather than tied with it.
+        const score = -timedSearch(makeMove(s, move), depth - 1, -Infinity, -alpha, 1, deadline, now);
+        ranked.push({ move, score: score > alpha ? score : Math.min(score, alpha - 1) });
+        if (score > alpha) alpha = score;
+      }
+      best = ranked.sort((a, b) => b.score - a.score);
+      moves = best.map((r) => r.move);
+      reached = depth;
+      if (best[0].score > MATE - 100) break;          // found a forced mate, no need to look further
+    } catch (err) {
+      if (!(err instanceof OutOfTime)) throw err;
+      break;
+    }
+  }
+  return { ranked: best, depth: reached };
+}
+
+/** Picks the computer's move. Easier levels sometimes choose a slightly worse move on purpose. */
+export function chooseMove(s, level = 'medium', rand = Math.random) {
+  const { depth, randomness, timeMs } = levelOf(level);
+  const ranked = timeMs ? rankMovesTimed(s, { maxDepth: depth, timeMs }).ranked : rankMoves(s, depth);
   const best = ranked[0].score;
   const choices = ranked.filter((r) => r.score >= best - randomness);
   return choices[Math.floor(rand() * choices.length)].move;

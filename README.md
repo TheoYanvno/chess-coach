@@ -18,7 +18,11 @@ Play chess against a computer opponent that also **coaches you**. After every mo
 - **Take it back and try again** after a mistake or blunder, so you learn the right idea
 - **Hints** that point out threats against your pieces and nudge you toward the best move before revealing it
 - **Game report** with an accuracy score, a count of each grade, and one thing to focus on next game
-- **Three opponent levels** (Beginner, Casual, Club), play as White or Black
+- **Four opponent levels**, play as White or Black:
+  - **Easy:** looks one move ahead and often picks a weaker move on purpose
+  - **Medium:** looks two moves ahead with a little randomness
+  - **Hard:** looks three moves ahead and always plays its best move
+  - **Professional:** keeps searching deeper (up to five moves) until its 2.5-second budget runs out
 - Full rules: castling, en passant, promotion (with a piece picker), check, checkmate, stalemate, the fifty-move rule, threefold repetition and insufficient material
 
 ## How it works
@@ -26,7 +30,7 @@ Play chess against a computer opponent that also **coaches you**. After every mo
 | File | What it does |
 |---|---|
 | [`src/engine.js`](src/engine.js) | Board representation, legal move generation, check detection, FEN and algebraic notation |
-| [`src/ai.js`](src/ai.js) | Evaluation (material + piece-square tables), negamax search with alpha-beta pruning, move ordering and quiescence search |
+| [`src/ai.js`](src/ai.js) | Evaluation (material + piece-square tables), negamax search with alpha-beta pruning, move ordering, quiescence search, and iterative deepening with a time limit for the Professional level |
 | [`src/coach.js`](src/coach.js) | Grades moves by how many centipawns they lose versus the best move, detects hanging pieces, missed captures and missed mates, and adds opening advice |
 | [`src/worker.js`](src/worker.js) | Runs the engine in a Web Worker so the page never freezes while the computer thinks |
 | [`src/ui.js`](src/ui.js) | Board rendering, click-to-move, coach feed, hints, take-backs and the game report |
@@ -48,6 +52,6 @@ It can also be published for free with GitHub Pages (Settings → Pages → depl
 
 - Puzzle mode built from your own mistakes
 - Save games and track accuracy over time
-- Stronger search (iterative deepening, transposition table)
+- A transposition table so Professional can search even deeper
 
 Built with help from AI coding tools for planning, code review and tests.
