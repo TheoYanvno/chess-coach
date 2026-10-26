@@ -54,4 +54,8 @@ It can also be published for free with GitHub Pages (Settings → Pages → depl
 - Save games and track accuracy over time
 - A transposition table so Professional can search even deeper
 
-Built with help from AI coding tools for planning, code review and tests.
+## Credits
+
+- Built by Anthony Evo.
+- Claude, Anthropic's AI assistant, made the AI learning tool: the coach that grades each move, explains it, gives hints and writes the game report.
+- Built with help from AI coding tools for planning, code review and tests.
